@@ -7,7 +7,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, r2_score
 
 # 1. Load Dataset
-data = pd.read_csv("dataset/winequality-red.csv")
+data = pd.read_csv("dataset/winequality-red.csv", sep=";")
 
 X = data.drop("quality", axis=1)
 y = data["quality"]
