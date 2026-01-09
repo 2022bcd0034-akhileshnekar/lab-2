@@ -1,0 +1,45 @@
+name: MLOps Lab 2 Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  train-and-evaluate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run Training Script
+        run: |
+          python train.py
+
+      - name: Add Metrics to Job Summary
+        run: |
+          echo "## MLOps Lab 2 Results" >> $GITHUB_STEP_SUMMARY
+          echo "**Name:** Akhilesh Nekar" >> $GITHUB_STEP_SUMMARY
+          echo "**Roll Number:** <2022BCD0034>" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Evaluation Metrics" >> $GITHUB_STEP_SUMMARY
+          cat output/results.json >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: model-and-results
+          path: |
+            output/model.pkl
+            output/results.json
