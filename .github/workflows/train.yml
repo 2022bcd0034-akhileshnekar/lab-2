@@ -1,45 +1,52 @@
-name: MLOps Lab 2 Pipeline
+name: ML Training Pipeline
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
-  train-and-evaluate:
+  train-model:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.9'
+          python-version: '3.10'
 
       - name: Install dependencies
         run: |
+          python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run Training Script
+      - name: Run training script
         run: |
           python train.py
 
-      - name: Add Metrics to Job Summary
+      - name: Write metrics to Job Summary
         run: |
-          echo "## MLOps Lab 2 Results" >> $GITHUB_STEP_SUMMARY
+          echo "## Lab 2 - Automated ML Training" >> $GITHUB_STEP_SUMMARY
           echo "**Name:** Akhilesh Nekar" >> $GITHUB_STEP_SUMMARY
-          echo "**Roll Number:** <2022BCD0034>" >> $GITHUB_STEP_SUMMARY
+          echo "**Roll No:** 2022BCD0034" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Evaluation Metrics" >> $GITHUB_STEP_SUMMARY
-          cat output/results.json >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          cat outputs/results/metrics.json >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
 
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v3
+      - name: Upload model artifact
+        uses: actions/upload-artifact@v4
         with:
-          name: model-and-results
-          path: |
-            output/model.pkl
-            output/results.json
+          name: trained-model
+          path: outputs/model/
+
+      - name: Upload results artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: evaluation-results
+          path: outputs/results/
