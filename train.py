@@ -31,11 +31,7 @@ y_pred = model.predict(X_test)
 mse = mean_squared_error(y_test, y_pred)
 r2 = r2_score(y_test, y_pred)
 
-# 6. Save Model
-with open("output/model.pkl", "wb") as f:
-    pickle.dump(model, f)
-
-# 7. Save Metrics
+# 6. Save Metrics
 results = {
     "MSE": mse,
     "R2_Score": r2
@@ -44,6 +40,6 @@ results = {
 with open("output/results.json", "w") as f:
     json.dump(results, f, indent=4)
 
-# 8. Print Metrics 
+# 7. Print Metrics 
 print(f"MSE: {mse}")
 print(f"R2 Score: {r2}")
